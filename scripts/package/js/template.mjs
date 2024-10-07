@@ -13,9 +13,9 @@ const tsconfig = `{
     "noEmit": false,
     "declaration": true,
     "declarationDir": "dist",
-    "outDir": "dist",
+    "outDir": "dist"
   },
-  "include": ["src"],
+  "include": ["src"]
 }
 `;
 const packageJson = `{
@@ -25,7 +25,7 @@ const packageJson = `{
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc"
   },
   "devDependencies": {
     "typescript": "^5.6.2"

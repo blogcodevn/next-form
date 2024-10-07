@@ -13,9 +13,9 @@ const tsconfig = `{
     "noEmit": false,
     "declaration": true,
     "declarationDir": "dist",
-    "outDir": "dist",
+    "outDir": "dist"
   },
-  "include": ["src"],
+  "include": ["src"]
 }
 `;
 const tailwind = `import type { Config } from "tailwindcss";

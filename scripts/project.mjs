@@ -157,7 +157,7 @@ function linkPackage() {
   fs.writeFileSync(path.join(projectPath, 'package.json'), JSON.stringify(packageJson, null, 2));
 
   const params = [projectPath, "&&", "yarn"];
-  log.command(`cd ./projects/${mergedProject} && yarn`);
+  log.command(`cd ./projects/${mergedName} && yarn`);
 
   const interval = log.installing();
 

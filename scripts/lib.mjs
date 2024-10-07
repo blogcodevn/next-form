@@ -19,7 +19,7 @@ const packageDir = path.join(process.cwd(), 'packages');
 const packagePath = path.join(packageDir, mergedName);
 
 function createPackage() {
-  if (utils.exists(packagePath)) {
+  if (fs.existsSync(packagePath)) {
     log.error('Package already exists');
     log.exit();
   }

@@ -1,7 +1,0 @@
-.HelperText-root {
-  @apply block text-sm text-gray-500 mt-1;
-}
-
-.HelperText-error {
-  @apply text-red-500;
-}

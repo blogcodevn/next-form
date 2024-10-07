@@ -41,7 +41,7 @@ const tsconfig = `{
     "baseUrl": ".",
     "paths": {
       "@/*": ["./app/*"],
-      "@s3react/*": ["../../../packages/@s3react/*/src"]
+      "@blogcode/*": ["../../../packages/@blogcode/*/src"]
     },
 
     // Vite takes care of building everything, not tsc.
@@ -407,15 +407,15 @@ const routesIndex = `import type { MetaFunction } from "@remix-run/node";
 export const meta: MetaFunction = () => {
   return [
     { title: "\${PROJECT_NAME}" },
-    { name: "description", content: "Created by @s3react/mono" },
+    { name: "description", content: "Created by @blogcode/mono" },
   ];
 };
 
 export default function Index() {
   return (
     <div className="h-dvh w-dvw flex flex-col items-center justify-center">
-      <h1 className="font-bold text-center text-[24px] text-slate-100">Welcome to @s3react/mono</h1>
-      <div className="my-10 text-slate-100">This is demo of app &quot;@s3react/company&quot;.</div>
+      <h1 className="font-bold text-center text-[24px] text-slate-100">Welcome to @blogcode/mono</h1>
+      <div className="my-10 text-slate-100">This is demo of app &quot;@blogcode/company&quot;.</div>
     </div>
   );
 }

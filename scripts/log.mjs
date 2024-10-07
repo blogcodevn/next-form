@@ -9,7 +9,7 @@ const cyan = chalk.cyan;
 const gray = chalk.gray;
 chalk.yellowBright
 
-const NAME = green("≫ s3react");
+const NAME = green("≫ blogcode");
 const ERROR = red("[ ERROR ]");
 const RUN = yellowBright("[ RUN ]");
 const INSTALL = cyan("[ INSTALL ]");

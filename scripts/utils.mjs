@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import * as log from "./log.mjs";
 
 export function createName(name) {
-  return `@s3react/${name}`;
+  return `@blogcode/${name}`;
 }
 
 export function isValidName(name) {
@@ -10,7 +10,7 @@ export function isValidName(name) {
     return false;
   }
 
-  return name.toLowerCase().match(/^[a-z][a-z\d\.-_]+$/);
+  return name.toLowerCase().match(/^[a-z][a-z\d\.\-_]+$/);
 }
 
 export function command(cmd, params) {

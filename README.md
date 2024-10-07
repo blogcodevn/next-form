@@ -1,30 +1,42 @@
-# @s3react/mono
+# @blogcode/mono
 
-Management all projects and packages with one source
+## @vlogcode/next-form
 
-## Commands
+Run source
 
-### yarn project
-
-```sh
-yarn project <project_name> new <template>
-yarn project <project_name> add [<package_internet>, ...]
-yarn project <project_name> clean
-yarn project <project_name> remove [<package_internet>, ...]
-yarn project <project_name> rm
-yarn project <project_name> dev
-yarn project <project_name> start
-yarn project <project_name> build
-yarn project <project_name> eject
-yarn project <project_name> ln <package_name>
-```
-
-### yarn lib
 
 ```sh
-yarn lib <package_name> new <template>
-yarn lib <package_name> add [<package_internet>, ...]
-yarn lib <package_name> remove [<package_internet>, ...]
-yarn lib <package_name> clean
-yarn lib <package_name> rm
+git clone git@github.com:blogcodevn/next-form.git
 ```
+
+Install dependencies of `mono`.
+
+```sh
+yarn
+```
+
+Install dependencies of pacakge `@blogcode/next-form`
+
+```sh
+yarn lib next-form
+```
+
+Build package
+
+```sh
+yarn lib next-form build
+```
+
+Install dependencies of project demo.
+
+```sh
+yarn project next-app-form
+```
+
+Run source demo
+
+```sh
+yarn project next-app-form dev
+```
+
+Visit: http://localhost:3000
