@@ -167,7 +167,7 @@ export function useForm<FormValues extends FormBaseValues>(props?: UseFormProps<
     });
   }, [setFormValues, mode, validate]);
 
-  const handleSubmit = useCallback(function handleSubmit(submit: any) {
+  const handleSubmit = useCallback(function handleSubmit(submit: (e: FormEvent<HTMLFormElement>, values: FormValues) => void | Promise<void>) {
     return async function handleSubmitForm(e: FormEvent<HTMLFormElement>) {
       e.preventDefault();
       e.stopPropagation();
@@ -177,7 +177,7 @@ export function useForm<FormValues extends FormBaseValues>(props?: UseFormProps<
 
       try {
         if (validated.isValid) {
-          const result = await onSubmit?.(e);
+          const result = submit ? await submit(e, formValues) : await onSubmit?.(e);
           onAfterSubmit?.(result, formValues);
         } else {
           onError?.(validated.errors);

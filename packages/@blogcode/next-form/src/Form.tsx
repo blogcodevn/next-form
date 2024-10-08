@@ -1,6 +1,6 @@
-import React, { FormHTMLAttributes, forwardRef, PropsWithChildren, ReactElement, useMemo } from "react";
-import { useForm } from "./useForm";
+import React, { FormHTMLAttributes, forwardRef, ReactElement, useMemo } from "react";
 import { FormInitialProps, FormInstance } from "./types";
+import { useForm } from "./useForm";
 
 interface FormBaseProps extends FormHTMLAttributes<HTMLFormElement> {}
 
@@ -43,16 +43,16 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(
       if (action !== undefined) {
         if (typeof action === "string") {
           rs.action = action;
-          rs.onSubmit = onSubmit;
+          rs.onSubmit = form.handleSubmit(onSubmit as any);
         } else {
           rs.action = action as unknown as string;
         }
       } else {
-        rs.onSubmit = onSubmit;
+        rs.onSubmit = form.handleSubmit(onSubmit as any);
       }
 
       return rs;
-    }, [rest]);
+    }, [rest, onSubmit, action, form]);
 
     return (
       <form {...formProps} ref={ref}>

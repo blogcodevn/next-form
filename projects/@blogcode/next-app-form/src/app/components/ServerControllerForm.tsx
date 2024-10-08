@@ -9,8 +9,6 @@ import { FormInnerProps } from "./DemoServerForm";
 export const ServerControllerForm: FC<FormInnerProps> = (props) => {
   const { form } = props;
 
-  console.log(form);
-
   return (
     <>
       <h2 className="text-lg text-center text-slate-200 font-bold mb-4">

@@ -1,7 +1,7 @@
-import clsx from "clsx";
 import { FocusEvent, forwardRef, InputHTMLAttributes, PropsWithChildren, ReactNode, useState } from "react";
 import { InputLabel } from "./InputLabel";
 import { HelperText } from "./HelperText";
+import clsx from "clsx";
 
 export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: ReactNode;
@@ -25,8 +25,6 @@ export const TextInput = forwardRef<HTMLInputElement, PropsWithChildren<TextInpu
       setFocused(false);
       onBlur?.(e);
     };
-
-    console.log(rest.name, rest);
   
     return (
       <div className={clsx("w-full", className)}>

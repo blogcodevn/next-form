@@ -8,12 +8,27 @@ and server-side rendering scenarios.
 
 - `0.0.5`:
   - Add action function for error `Warning: Extra attributes from the server: action`;
+    - If using as CSR, set action as a void function.
   - `throw new Error('React form unexpectedly submitted.')`.
+    - Cannot using import via exported to `index.tsx` of package.
+    - Import directly to file contain Form will fix this.
+    - Removed exported to `index.tsx`. If using Form and Controller, let's import directly to file.
+      - `import { Form } from "@blogcode/next-form/Form";`
+      - `import { Controller } from "@blogcode/next-form/Controller";`
   - `javascript:throw new Error('A React form was unexpectedly submitted. If you called form.submit() manually, consider using form.requestSubmit() instead. If you\'re trying to use event.stopPropagation() in a submit event handler, consider also calling event.preventDefault().')`
+    - This error is caused by hot reload so it will not appear in production environment. Therefore we will not try to fix it.
+  - The logic handler from server action (`action`) to client (`onAfterSubmit`) removed. 
+    - Although it has been tested in a real project and it works fine, in order to fix the Server Action errors listed here, it is temporarily removed.
+    - It may reappear in the future if it does not cause errors. We are still working around it.
+  - Removed `props.ssr`. Because server and client threads will be used independently, this flag has no effect anymore.
+  - Some types have been redefined to better accommodate the new treatment.
+
 - `0.0.4`:
   - Fix `Controller` component does not required `props.form`.
   - That mean when using without `Form` Component wrapped it, you must be passed `form` for `Controller`.
+
 - `0.0.3`: Fix typeof value of `ControllerRenderField` from `unknown` to `string`.
+
 - `0.0.2`: Fix export `value` as set default as empty string for `getInputProps`. Change type of value from `unknown` to `string`.
 
 ## Installation
@@ -29,6 +44,8 @@ Or if you're using yarn:
 ```sh
 yarn add @blogcode/next-form
 ```
+
+**[Check demo code at here](https://github.com/blogcodevn/next-form/blob/develop/projects/%40blogcode/next-app-form/src/app/page.tsx)**
 
 ## Features
 

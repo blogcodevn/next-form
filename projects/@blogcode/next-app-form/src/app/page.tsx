@@ -2,6 +2,7 @@ import { handleActionDemoForm } from "./action";
 import { DemoServerForm } from "./components/DemoServerForm";
 import { ServerForm } from "./components/ServerForm";
 import { ServerControllerForm } from "./components/ServerControllerForm";
+import { DemoClientForm } from "./components/DemoClientForm";
 
 export default function Home() {
 
@@ -12,6 +13,7 @@ export default function Home() {
       <div className="mb-10 text-slate-100">Demo package &quot;@blogcode/next-form&quot;.</div>
       <DemoServerForm Inner={ServerForm} action={handleActionDemoForm} />
       <DemoServerForm Inner={ServerControllerForm} action={handleActionDemoForm} />
+      <DemoClientForm />
       {/* <DemoForm Inner={ClientForm} onSubmit={handleSubmit} /> */}
     </div>
   );
