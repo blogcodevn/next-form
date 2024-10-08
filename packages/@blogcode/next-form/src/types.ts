@@ -2,8 +2,9 @@ import {
   ChangeEvent,
   Dispatch,
   FocusEvent,
+  FormEvent,
   FormHTMLAttributes,
-  InputHTMLAttributes,
+  HTMLAttributes,
   ReactNode,
   SetStateAction
 } from "react";
@@ -32,10 +33,13 @@ export type FormScheam = Record<string, FormFieldSchema>;
 export interface FormControlProps {
   name: string;
   error?: string;
+  value: string;
   onChange(e: ChangeEvent<HTMLInputElement>): void;
   onBlur(e: FocusEvent<HTMLInputElement>): void;
   onFocus(e: FocusEvent<HTMLInputElement>): void;
 }
+
+export type FormBaseValues = Record<string, unknown>;
 
 export interface FormInstance {
   data: FormData;
@@ -45,7 +49,7 @@ export interface FormInstance {
     T extends string | undefined,
     D extends Record<string, unknown> = Record<string, unknown>
   >(name?: T): T extends string ? string : D;
-  setValues<T extends string | Record<string, unknown>>(name: T, value?: unknown): void;
+  setValues<T extends string | FormBaseValues>(name: T, value?: unknown): void;
   reset(): void;
   validate(name?: string): Promise<FormValidateResult>;
   setError(name: string, message: string): void;
@@ -56,7 +60,7 @@ export interface FormInstance {
 
 export type FormBaseProps = FormHTMLAttributes<HTMLFormElement>;
 
-export type FormAction<DataType = void> = (data: FormData) => Promise<DataType>;
+export type FormAction<DataType = void> = (data: FormData) => DataType | Promise<DataType>;
 
 export type FormRef = HTMLFormElement & FormInstance;
 
@@ -64,21 +68,18 @@ export type FormPrimitive = ReactNode | ReactNode[];
 
 export type FormMode = "change" | "blur" | "submit";
 
-export type FormResolver = (data: Record<string, unknown>, name?: string) => Promise<FormValidateResult>;
+export type FormResolver = (data: FormBaseValues, name?: string) => Promise<FormValidateResult>;
 
-export interface FormInitialProps<FormValues extends Record<string, unknown> = Record<string, unknown>> {
-  action?: FormAction<unknown>;
-  onSubmit?(data: FormData): void;
-  onAfterSubmit?(data: unknown): void;
+export interface FormInitialProps<FormValues extends FormBaseValues = FormBaseValues> {
+  action?: string | FormAction<void>;
+  onSubmit?(e: FormEvent<HTMLFormElement>): void;
+  onAfterSubmit?(result: unknown, data: FormValues): void;
   onError?(error: Record<string, FormError>): void;
-  enhanceGetInputProps?(form: FormInstance): Partial<InputHTMLAttributes<HTMLInputElement>>;
+  enhanceGetInputProps?(form: FormInstance): Partial<HTMLAttributes<FormBaseControlElement>>;
   resolver?: FormResolver;
   values?: FormValues;
   schema?: FormScheam;
-  ssr?: boolean;
   mode?: FormMode;
 }
 
-export interface FormProps extends Omit<FormBaseProps, "onSubmit" | "action" | "children" | "onError">, FormInitialProps {
-  children: FormPrimitive | ((form: FormInstance) => FormPrimitive);
-}
+export type FormBaseControlElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | HTMLDivElement;

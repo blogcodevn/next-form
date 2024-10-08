@@ -1,33 +1,47 @@
-import { ChangeEvent, FocusEvent, FormEvent, useCallback, useMemo, useRef, useState } from "react";
-import { FormError, FormFieldSchema, FormInitialProps, FormInstance, FormValidateResult } from "./types";
-import { validate as validateAll } from './validate';
+import {
+  ChangeEvent,
+  FocusEvent,
+  FormEvent,
+  HTMLAttributes,
+  useCallback,
+  useMemo,
+  useRef,
+  useState
+} from "react";
+import {
+  FormBaseControlElement,
+  FormBaseValues,
+  FormError,
+  FormFieldSchema,
+  FormInitialProps,
+  FormInstance,
+  FormValidateResult
+} from "./types";
+import { validate as validateAll } from "./validate";
 import { createFormData } from "./createFormData";
 
-export type UseFormProps<FormValues extends Record<string, unknown>> = FormInitialProps<FormValues>;
+export type UseFormProps<FormValues extends FormBaseValues> = FormInitialProps<FormValues>;
 
-export function useForm<FormValues extends Record<string, unknown>>(props: UseFormProps<FormValues>) {
+export function useForm<FormValues extends FormBaseValues>(props?: UseFormProps<FormValues>) {
   const {
-    values: initialValues = {},
+    values = {},
     schema = {},
     mode,
-    ssr,
     enhanceGetInputProps,
     onSubmit,
     onError,
-    action,
     onAfterSubmit,
     resolver,
-  } = props;
+  } = props || {};
 
-  const [formValues, setFormValues] = useState<FormValues>(initialValues as FormValues);
-  const [errors, setErrors] = useState<Record<string, FormError>>({});
+  const [formValues, setFormValues] = useState<FormValues>(values as FormValues);
+  const [formErrors, setFormErrors] = useState<Record<string, FormError>>({});
   const [submitting, setSubmitting] = useState(false);
-
   const schemaRef = useRef(schema);
 
   const data = useMemo(() => createFormData(formValues), [formValues]);
 
-  const validate = useCallback(async (name?: string, newValues?: Record<string, unknown>) => {
+  const validate = useCallback(async function validate(name?: string, newValues?: FormValues) {
     const dataToValidate = newValues ?? formValues;
     let validated: FormValidateResult;
 
@@ -38,9 +52,9 @@ export function useForm<FormValues extends Record<string, unknown>>(props: UseFo
     }
 
     if (name) {
-      setErrors((prev) => {
+      setFormErrors((prev) => {
         const nextErrors = { ...prev };
-        
+
         if (validated.errors[name]) {
           nextErrors[name] = validated.errors[name];
         } else {
@@ -50,16 +64,60 @@ export function useForm<FormValues extends Record<string, unknown>>(props: UseFo
         return nextErrors;
       });
     } else {
-      setErrors(() => validated.errors);
+      setFormErrors(() => validated.errors);
     }
 
     return validated;
-  }, [formValues, schemaRef.current]);
+  }, [setFormErrors, resolver, formValues, schemaRef.current]);
+
+  const getInputProps = useCallback(function getInputProps(name: string, rules?: FormFieldSchema) {
+    if (rules) {
+      schemaRef.current = {
+        ...(schemaRef.current ?? {}),
+        [name]: {
+          ...(schemaRef.current?.[name] ?? {}),
+          ...rules
+        }
+      };
+    }
+
+    const onChange = (e: ChangeEvent<FormBaseControlElement>) => {
+      const target = e.target as HTMLInputElement;
+
+      setFormValues((prev) => {
+        const nextValues = { ...prev, [name]: target.value };
+
+        if (!mode || mode === "change") {
+          validate(name, nextValues);
+        }
+
+        return nextValues;
+      })
+    };
+
+    const onBlur = (e: FocusEvent<FormBaseControlElement>) => {
+      if (!mode || mode === "blur") {
+        validate(name);
+      }
+    };
+
+    const enhancedProps: HTMLAttributes<FormBaseControlElement> = enhanceGetInputProps?.(form as FormInstance) ?? {};
+
+    return {
+      ...enhancedProps,
+      name,
+      value: (formValues[name] ?? "") as string,
+      error: formErrors[name]?.message,
+      onChange,
+      onBlur,
+      onFocus() {},
+    };
+  }, [mode, formValues, formErrors, schemaRef.current, setFormValues, validate, enhanceGetInputProps]);
 
   const getValues = useCallback(
-    <T extends string | undefined, D extends FormValues = FormValues>(
+    function getValues<T extends string | undefined, D extends FormValues = FormValues>(
       name?: T
-    ): T extends string ? string : D => {
+    ): T extends string ? string : D {
       type GetValueResult = T extends string ? string : D;
 
       if (name) {
@@ -71,62 +129,20 @@ export function useForm<FormValues extends Record<string, unknown>>(props: UseFo
     [formValues]
   );
 
-  const reset = useCallback(() => {
-    setFormValues(initialValues as FormValues);
-    setErrors({});
-  }, [initialValues]);
+  const reset = useCallback(function reset() {
+    setFormValues(values as FormValues);
+    setFormErrors({});
+  }, [values, setFormValues, setFormErrors]);
 
-  const setError = useCallback((name: string, message: string) => {
-    setErrors((prev) => ({
+  const setError = useCallback(function setError(name: string, message: string) {
+    setFormErrors((prev) => ({
       ...prev,
       [name]: { message },
     }));
-  }, [setErrors]);
+  }, [setFormErrors]);
 
-  const getInputProps = useCallback((name: string, fieldSchema?: FormFieldSchema) => {
-    if (fieldSchema) {
-      schemaRef.current = Object.assign({}, {
-        ...schemaRef.current,
-        [name]: {
-          ...(schemaRef.current[name] || {}),
-          ...fieldSchema
-        }
-      });
-    }
-
-    const baseProps = {
-      name,
-      error: errors[name]?.message,
-      onChange: (e: ChangeEvent<HTMLInputElement>) => {
-        const target = e.target as HTMLInputElement;
-        setFormValues((prev) => {
-          const nextValues = { ...prev, [name]: target.value };
-
-          if (!mode || mode === "change") {
-            validate(name, nextValues);
-          }
-
-          return nextValues;
-        })
-      },
-      onBlur: (e: FocusEvent<HTMLInputElement>) => {
-        if (!mode || mode === "blur") {
-          validate(name);
-        }
-      },
-      onFocus() {},
-    };
-
-    const enhancedProps = enhanceGetInputProps?.(formInstance) ?? {};
-
-    return {
-      ...baseProps,
-      ...enhancedProps,
-    };
-  }, [errors, validate, mode, enhanceGetInputProps, setFormValues, validate]);
-
-  const clearErrors = useCallback((name?: string) => {
-    setErrors((prev) => {
+  const clearErrors = useCallback(function clearErrors(name?: string) {
+    setFormErrors((prev) => {
       if (name) {
         const nextError = { ...prev };
         delete nextError[name];
@@ -135,13 +151,13 @@ export function useForm<FormValues extends Record<string, unknown>>(props: UseFo
 
       return {};
     });
-  }, [setErrors]);
+  }, [setFormErrors]);
 
-  const setValues = useCallback(<T extends string | Record<string, unknown>>(name: T, value?: unknown) => {
+  const setValues = useCallback(function setValues<T extends string | FormValues>(name: T, value?: unknown) {
     setFormValues((prev) => {
       const isSingle = typeof name === "string";
       const keyValidate = isSingle ? name : undefined;
-      const nextValues = { ...prev, ...(isSingle ? { [name]: value } : name) as Record<string, unknown> };
+      const nextValues = { ...prev, ...(isSingle ? { [name]: value } : name) as FormValues };
 
       if (!mode || mode === "change") {
         validate(keyValidate, nextValues);
@@ -151,18 +167,18 @@ export function useForm<FormValues extends Record<string, unknown>>(props: UseFo
     });
   }, [setFormValues, mode, validate]);
 
-  const handleSubmit = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      if (e && typeof e.preventDefault === "function") {
-        e.preventDefault();
-      }
+  const handleSubmit = useCallback(function handleSubmit(submit: any) {
+    return async function handleSubmitForm(e: FormEvent<HTMLFormElement>) {
+      e.preventDefault();
+      e.stopPropagation();
 
       const validated = await validate();
       setSubmitting(true);
 
       try {
         if (validated.isValid) {
-          await onSubmit?.(data);
+          const result = await onSubmit?.(e);
+          onAfterSubmit?.(result, formValues);
         } else {
           onError?.(validated.errors);
         }
@@ -171,65 +187,39 @@ export function useForm<FormValues extends Record<string, unknown>>(props: UseFo
       } finally {
         setSubmitting(false);
       }
-    },
-    [data, onError, onSubmit, validate]
-  );
+    };
+  }, [formValues, validate, onError, setSubmitting, onSubmit]);
 
-  const handleAction = useCallback(async (form: FormData) => {
-    const validated = await validate();
-
-    if (!validated.isValid) {
-      onError?.(validated.errors);
-      return;
-    }
-
-    setSubmitting(true);
-
-    if (onSubmit) {
-      await onSubmit(form);
-      setSubmitting(false);
-      return;
-    }
-
-    if (action) {
-      try {
-        const result = await action(form);
-        onAfterSubmit?.(result);
-      } catch (e) {
-        onError?.(e as unknown as Record<string, FormError>);
-      } finally {
-        setSubmitting(false);
-      }
-    } else {
-      onAfterSubmit?.(form);
-      setSubmitting(false);
-    }
-  }, [action, onError, onAfterSubmit, onSubmit, validate]);
-
-  const formInstance = useMemo(
+  const form = useMemo(
     () => ({
       data,
-      errors,
+      errors: formErrors,
       submitting,
+      setSubmitting,
+      getInputProps,
+      validate,
       getValues,
-      setValues,
+      reset,
       setError,
       clearErrors,
-      reset,
-      validate,
-      getInputProps,
+      setValues,
+      handleSubmit,
+    }),
+    [
+      data,
+      formErrors,
+      submitting,
       setSubmitting,
-    } as FormInstance),
-    [data, errors, submitting, ssr, getValues, setError, clearErrors, getInputProps, validate, reset]
+      getInputProps,
+      validate,
+      getValues,
+      reset,
+      setError,
+      clearErrors,
+      setValues,
+      handleSubmit
+    ]
   );
 
-  const formProps = useMemo(() => ({
-    onSubmit: ssr ? undefined : handleSubmit,
-    action: ssr ? handleAction : undefined,
-  }), [ssr, handleAction, handleSubmit]);
-
-  return {
-    form: formInstance,
-    formProps,
-  }
+  return form;
 }

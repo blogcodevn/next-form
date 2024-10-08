@@ -1,0 +1,35 @@
+{
+  "name": "@blogcode/next-tiptap",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "scripts": {
+    "build:css": "postcss src/style.css -o dist/style.css",
+    "build:lib": "tsc",
+    "build": "yarn build:css && yarn build:lib"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "postcss-cli": "^11.0.0",
+    "postcss-import": "^16.1.0",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2"
+  },
+  "dependencies": {
+    "@tiptap/extension-text-align": "^2.8.0",
+    "@tiptap/extension-text-style": "^2.8.0",
+    "@tiptap/extension-underline": "^2.8.0",
+    "@tiptap/react": "^2.8.0",
+    "@tiptap/starter-kit": "^2.8.0",
+    "clsx": "^2.1.1"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

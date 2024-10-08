@@ -4,6 +4,18 @@
 It provides an easy-to-use API for handling form state, validation, and submission in both client-side 
 and server-side rendering scenarios.
 
+## CHANGE LOG
+
+- `0.0.5`:
+  - Add action function for error `Warning: Extra attributes from the server: action`;
+  - `throw new Error('React form unexpectedly submitted.')`.
+  - `javascript:throw new Error('A React form was unexpectedly submitted. If you called form.submit() manually, consider using form.requestSubmit() instead. If you\'re trying to use event.stopPropagation() in a submit event handler, consider also calling event.preventDefault().')`
+- `0.0.4`:
+  - Fix `Controller` component does not required `props.form`.
+  - That mean when using without `Form` Component wrapped it, you must be passed `form` for `Controller`.
+- `0.0.3`: Fix typeof value of `ControllerRenderField` from `unknown` to `string`.
+- `0.0.2`: Fix export `value` as set default as empty string for `getInputProps`. Change type of value from `unknown` to `string`.
+
 ## Installation
 
 To install `@blogcode/next-form`, run the following command in your project directory:

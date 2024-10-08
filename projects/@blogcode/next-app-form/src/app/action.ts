@@ -7,8 +7,10 @@ export async function handleActionDemoForm(data: FormData) {
     lastname: encodeURIComponent(data.get("lastname") as string),
   };
 
-  return {
-    message: "Form submitted",
-    values,
-  };
+  console.log(values);
+
+  // return {
+  //   message: "Form submitted",
+  //   values,
+  // };
 }

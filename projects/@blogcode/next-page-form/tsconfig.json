@@ -12,18 +12,12 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@blogcode/next-form": ["../../../packages/@blogcode/next-form/src"],
-      "@blogcode/next-form/*": ["../../../packages/@blogcode/next-form/src/*"],
+      "@blogcode/*": ["../../../packages/@blogcode/*/src"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/components/DemoServerForm.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

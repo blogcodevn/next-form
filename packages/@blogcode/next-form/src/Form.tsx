@@ -1,77 +1,63 @@
-import React, {
-  Children,
-  cloneElement,
-  forwardRef,
-  isValidElement,
-  useImperativeHandle,
-  useRef,
-} from "react";
-import { FormBaseProps, FormProps, FormRef } from "./types";
+import React, { FormHTMLAttributes, forwardRef, PropsWithChildren, ReactElement, useMemo } from "react";
 import { useForm } from "./useForm";
+import { FormInitialProps, FormInstance } from "./types";
 
-export const Form = forwardRef<FormRef, FormProps>(
-  function Form(props, ref) {
+interface FormBaseProps extends FormHTMLAttributes<HTMLFormElement> {}
+
+export interface FormProps
+  extends Omit<FormBaseProps, "children" | keyof FormInitialProps>,
+    FormInitialProps {
+      children(form: FormInstance): ReactElement;
+    }
+
+export const Form = forwardRef<HTMLFormElement, FormProps>(
+  function ServerForm(props, ref) {
     const {
-      children,
-      values: initialValues = {},
-      schema = {},
+      action,
+      values,
+      schema,
       mode,
-      ssr = true,
-      autoComplete = "off",
-      enhanceGetInputProps,
+      resolver,
       onSubmit,
       onError,
-      action,
       onAfterSubmit,
+      enhanceGetInputProps,
+      children,
       ...rest
     } = props;
 
-    const { form, formProps } = useForm({
-      values: initialValues,
+    const form = useForm({
+      values,
       schema,
       mode,
-      ssr,
-      enhanceGetInputProps,
+      resolver,
       onSubmit,
       onError,
-      action,
       onAfterSubmit,
+      enhanceGetInputProps,
     });
 
-    const formRef = useRef<HTMLFormElement>(null);
+    const formProps = useMemo(() => {
+      const rs: Omit<FormBaseProps, "children"> = { ...rest };
 
-    useImperativeHandle(ref, () => ({
-      ...formRef.current,
-      ...form,
-    } as FormRef), [formRef.current, form])
+      if (action !== undefined) {
+        if (typeof action === "string") {
+          rs.action = action;
+          rs.onSubmit = onSubmit;
+        } else {
+          rs.action = action as unknown as string;
+        }
+      } else {
+        rs.onSubmit = onSubmit;
+      }
+
+      return rs;
+    }, [rest]);
 
     return (
-      <form
-        {...rest}
-        {...formProps as FormBaseProps}
-        ref={formRef}
-        autoComplete={autoComplete}
-      >
-        {(() => {
-          if (typeof children === "function") {
-            return children(form);
-          }
-
-          const childrenArray = Children.toArray(children);
-
-          return childrenArray.map((child, index) => {
-            return isValidElement(child)
-              ? cloneElement(child, {
-                ...child.props,
-                key: child.key || index,
-                form: form,
-              })
-              : null;
-          });
-        })()}
+      <form {...formProps} ref={ref}>
+        {children(form)}
       </form>
     );
   }
 );
-
-Form.displayName = "@blogcode/next-form/Form";

@@ -1,0 +1,7 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.blogcode-ToolbarButton-root {
+  @apply w-8 h-8 rounded-md transition-all hover:bg-gray-200;
+}

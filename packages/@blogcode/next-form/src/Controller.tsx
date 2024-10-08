@@ -1,9 +1,10 @@
-import { ChangeEvent, FC, FocusEvent, ReactElement, useCallback, useEffect } from "react";
+import { ChangeEvent, FC, FocusEvent, ReactElement, useCallback, useEffect, useMemo } from "react";
 import { FormError, FormFieldSchema, FormInstance } from "./types";
 
 export interface ControllerRenderField {
   name: string;
-  value: unknown;
+  value: string;
+  error?: string;
   onChange(e: ChangeEvent<HTMLInputElement>): void;
   onBlur(e: FocusEvent<HTMLInputElement>): void;
   onFocus(e: FocusEvent<HTMLInputElement>): void;
@@ -26,7 +27,7 @@ export interface ControllerRenderProps {
 
 export interface ControllerProps {
   name: string;
-  form: FormInstance;
+  form?: FormInstance;
   rules?: FormFieldSchema;
   render(props: ControllerRenderProps): ReactElement;
   onChange?(e: ChangeEvent<HTMLInputElement>): void;
@@ -38,12 +39,11 @@ export const Controller: FC<ControllerProps> = (props) => {
 
   useEffect(() => {
     if (rules) {
-      form.getInputProps(name, rules);
+      form!.getInputProps(name, rules);
     }
   }, [form, name, rules]);
 
-  const inputProps = form.getInputProps(name);
-  const value = form.getValues(name);
+  const inputProps = useMemo(() => form!.getInputProps(name), [form, name]);
 
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     inputProps.onChange(e);
@@ -57,18 +57,16 @@ export const Controller: FC<ControllerProps> = (props) => {
 
   const renderProps = {
     field: {
-      name,
-      value,
+      ...inputProps,
       onChange: handleChange,
       onBlur: handleBlur,
-      onFocus: inputProps.onFocus,
     },
     fieldState: {
-      error: form.errors[name]?.message,
+      error: form!.errors[name]?.message,
     },
     formState: {
-      errors: form.errors,
-      submitting: form.submitting,
+      errors: form!.errors,
+      submitting: form!.submitting,
     },
   };
 

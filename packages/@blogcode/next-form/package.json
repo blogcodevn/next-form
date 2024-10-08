@@ -1,6 +1,6 @@
 {
   "name": "@blogcode/next-form",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
@@ -29,7 +29,8 @@
   ],
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "seccheck": "npx snyk test"
   },
   "devDependencies": {
     "@types/node": "^20",
