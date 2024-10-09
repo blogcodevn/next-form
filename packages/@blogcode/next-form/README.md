@@ -6,6 +6,8 @@ and server-side rendering scenarios.
 
 ## CHANGE LOG
 
+- `0.0.6`
+  - `createFormData` function support fully type.
 - `0.0.5`:
   - Add action function for error `Warning: Extra attributes from the server: action`;
     - If using as CSR, set action as a void function.
@@ -27,9 +29,12 @@ and server-side rendering scenarios.
   - Fix `Controller` component does not required `props.form`.
   - That mean when using without `Form` Component wrapped it, you must be passed `form` for `Controller`.
 
-- `0.0.3`: Fix typeof value of `ControllerRenderField` from `unknown` to `string`.
+- `0.0.3`:
+  - Fix typeof value of `ControllerRenderField` from `unknown` to `string`.
 
-- `0.0.2`: Fix export `value` as set default as empty string for `getInputProps`. Change type of value from `unknown` to `string`.
+- `0.0.2`:
+  - Fix export `value` as set default as empty string for `getInputProps`.
+  - Change type of value from `unknown` to `string`.
 
 ## Installation
 
@@ -68,8 +73,8 @@ import { useForm } from '@blogcode/next-form';
 
 function MyForm() {
   const { form, formProps } = useForm({
-    initialValues: { name: '', email: '' },
-    onSubmit: (data) => {
+    values: { name: '', email: '' },
+    onSubmit: (e, data) => {
       console.log(data);
     },
   });
@@ -105,12 +110,12 @@ The `useForm` hook accepts the following props:
 
 ```tsx
 const { form, formProps } = useForm({
-  initialValues: { name: '', email: '' },
+  values: { name: '', email: '' },
   schema: {
     name: { required: true, minLength: 2 },
     email: { required: true, pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
   },
-  onSubmit: (data) => {
+  onSubmit: (e, data) => {
     console.log(data);
   },
 });
@@ -143,7 +148,7 @@ For client-side rendering, use the `onSubmit` prop:
 
 ```tsx
 const { form, formProps } = useForm({
-  onSubmit: (formData) => {
+  onSubmit: (e, formData) => {
     // Handle client-side form submission
     console.log('Form data:', formData);
   },
@@ -165,8 +170,8 @@ import { Form } from '@blogcode/next-form';
 function MyForm() {
   return (
     <Form
-      initialValues={{ name: '', email: '' }}
-      onSubmit={(data) => console.log(data)}
+      values={{ name: '', email: '' }}
+      onSubmit={(e, data) => console.log(data)}
     >
       <input name="name" />
       <input name="email" type="email" />
@@ -184,8 +189,8 @@ import { Form } from '@blogcode/next-form';
 function MyForm() {
   return (
     <Form
-      initialValues={{ name: '', email: '' }}
-      onSubmit={(data) => console.log(data)}
+      values={{ name: '', email: '' }}
+      onSubmit={(e, data) => console.log(data)}
     >
       {(form) => (
         <>
@@ -209,8 +214,8 @@ import { Form, Controller } from '@blogcode/next-form';
 function MyForm() {
   return (
     <Form
-      initialValues={{ name: '', email: '' }}
-      onSubmit={(data) => console.log(data)}
+      values={{ name: '', email: '' }}
+      onSubmit={(e, data) => console.log(data)}
     >
       <Controller
         name="name"
