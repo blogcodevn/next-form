@@ -6,6 +6,9 @@ and server-side rendering scenarios.
 
 ## CHANGE LOG
 
+- `0.0.7`:
+  - Export Form and Controller components to support CSR.
+  - Clean dist and rebuild
 - `0.0.6`
   - `createFormData` function support fully type.
 - `0.0.5`:
