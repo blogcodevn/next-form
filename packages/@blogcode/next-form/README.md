@@ -5,7 +5,10 @@ It provides an easy-to-use API for handling form state, validation, and submissi
 and server-side rendering scenarios.
 
 ## CHANGE LOG
-
+- `0.0.9`:
+  - Restruct output build
+- `0.0.8`:
+  - Add `exports` for `package.json` to alias import.
 - `0.0.7`:
   - Export Form and Controller components to support CSR.
   - Clean dist and rebuild

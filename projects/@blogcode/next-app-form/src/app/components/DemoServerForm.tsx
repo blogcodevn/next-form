@@ -1,7 +1,8 @@
 "use client";
 
 import { FC } from "react";
-import { Form, FormProps } from "@blogcode/next-form/Form";
+import { Form } from "@blogcode/next-form/dist/Form";
+import { FormProps } from "@blogcode/next-form/dist/types";
 import { FormInstance } from "@blogcode/next-form";
 import { schema } from "./utils";
 

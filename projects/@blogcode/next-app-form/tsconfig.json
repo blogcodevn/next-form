@@ -19,9 +19,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@blogcode/next-form": ["../../../packages/@blogcode/next-form/src"],
-      "@blogcode/next-form/*": ["../../../packages/@blogcode/next-form/src/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/components/DemoServerForm.tsx"],

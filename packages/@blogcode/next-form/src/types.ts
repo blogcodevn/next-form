@@ -62,8 +62,6 @@ export type FormBaseProps = FormHTMLAttributes<HTMLFormElement>;
 
 export type FormAction<DataType = void> = (data: FormData) => DataType | Promise<DataType>;
 
-export type FormRef = HTMLFormElement & FormInstance;
-
 export type FormPrimitive = ReactNode | ReactNode[];
 
 export type FormMode = "change" | "blur" | "submit";
